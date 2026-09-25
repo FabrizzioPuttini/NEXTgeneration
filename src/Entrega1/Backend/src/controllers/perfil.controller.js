@@ -1,5 +1,3 @@
-const supabase = require('../config/supabase');
-
 const getPerfilAluno = async (req, res) => {
   try {
     // O ID do usuário logado deve vir do token JWT/sessão atual (ex: via middleware de auth)

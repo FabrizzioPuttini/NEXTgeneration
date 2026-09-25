@@ -1,9 +1,10 @@
+// src/routes/perfil.routes.js
 const express = require('express');
 const router = express.Router();
-const perfilController = require('../controllers/perfil.controller');
-const authMiddleware = require('../middleware/auth'); // Seu verificador de token
+const { getPerfilAluno } = require('../controllers/perfil.controller');
+const authMiddleware = require('../middleware/auth');
 
-// Rota GET /api/perfil
-router.get('/', authMiddleware, perfilController.getPerfilAluno);
+// Rota para buscar o perfil do aluno logado
+router.get('/', authMiddleware, getPerfilAluno);
 
 module.exports = router;
