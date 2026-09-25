@@ -27,7 +27,7 @@ async function auth(req, res, next) {
     const supabase = createSupabaseClientForUser(token);
 
     // Valida o token junto ao Supabase Auth e obtém os dados do usuário.
-    const { data, error } = await supabase.auth.getUser();
+    const { data, error } = await supabase.auth.getUser(token);
 
     if (error || !data || !data.user) {
       return res.status(401).json({ error: 'Token inválido' });
