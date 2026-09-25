@@ -2,7 +2,9 @@ package com.example.myapplication.aba_cursos;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -12,11 +14,14 @@ import com.example.myapplication.AgendaActivity;
 import com.example.myapplication.PaginaInicial;
 import com.example.myapplication.PerfilActivity;
 import com.example.myapplication.R;
+import com.example.myapplication.network.ApiClient;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import com.example.myapplication.AgendaItem;
-import com.example.myapplication.AgendaManager;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class CursosActivity extends AppCompatActivity {
 
@@ -39,32 +44,52 @@ public class CursosActivity extends AppCompatActivity {
         rvCursos = findViewById(R.id.rvCursos);
         rvCursos.setLayoutManager(new LinearLayoutManager(this));
 
-
         listaDeCursos = new ArrayList<>();
-        listaDeCursos.add(new Curso("Preparatório ENEM & Redação Nota 1000", 40, "Inscrito"));
-        listaDeCursos.add(new Curso("Workshop: Carreiras em Tecnologia e Programação", 16, "Disponível"));
-        listaDeCursos.add(new Curso("Orientação Profissional e Mercado de Trabalho", 20, "Disponível"));
-        listaDeCursos.add(new Curso("Imersão Universitária - FECAP & Parceiras", 10, "Concluído"));
-        listaDeCursos.add(new Curso("Empreendedorismo Jovem e Liderança", 24, "Disponível"));
-
-        // 3. Conectar a lista ao Adapter e o Adapter à RecyclerView
+        
+        // 2. Conectar a lista ao Adapter e o Adapter à RecyclerView
         adapter = new CursoAdapter(listaDeCursos, (curso, position) -> {
             if ("Disponível".equalsIgnoreCase(curso.getStatus())) {
-                curso.setStatus("Inscrito");
-                adapter.notifyItemChanged(position);
+                String token = com.example.myapplication.network.SessionManager.getToken(this);
+                if (token == null) {
+                    Toast.makeText(this, "Usuário não logado!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                // Faz a chamada real para a API para inscrever no curso
+                ApiClient.getApiService().inscreverCurso("Bearer " + token, curso.getId()).enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {
+                        if (response.isSuccessful()) {
+                            curso.setStatus("Inscrito");
+                            adapter.notifyItemChanged(position);
+
+                            // A agenda real é buscada do backend (GET /api/agenda) quando a
+                            // tela de Agenda é aberta; não há mais item mockado inserido aqui.
+
+                            Toast.makeText(CursosActivity.this, "Inscrição realizada com sucesso: " + curso.getNome(), Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(CursosActivity.this, "Erro ao realizar inscrição.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {
+                        Toast.makeText(CursosActivity.this, "Falha na conexão: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        Log.e("API", "Erro na API de inscrição: ", t);
+                    }
+                });
                 
-                // Adiciona na agenda global
-                AgendaManager.getInstance().adicionarItem(new AgendaItem("2026-04-10", "19:00:00", "21:00:00", "Primeiro Encontro", "Aula 1 — " + curso.getNome(), "Sala Virtual 1", false));
-                
-                android.widget.Toast.makeText(this, "Inscrição realizada com sucesso: " + curso.getNome(), android.widget.Toast.LENGTH_SHORT).show();
             } else if ("Inscrito".equalsIgnoreCase(curso.getStatus())) {
-                android.widget.Toast.makeText(this, "Você já está inscrito neste curso!", android.widget.Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Você já está inscrito neste curso!", Toast.LENGTH_SHORT).show();
             } else {
-                android.widget.Toast.makeText(this, "Este curso já foi concluído.", android.widget.Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Este curso já foi concluído.", Toast.LENGTH_SHORT).show();
             }
         });
 
         rvCursos.setAdapter(adapter);
+
+        // 3. Buscar a lista de cursos do Backend
+        buscarCursosDoBackend();
         layoutInicio.setOnClickListener(v -> {
             Intent inicio = new Intent(CursosActivity.this, PaginaInicial.class);
             startActivity(inicio);
@@ -76,6 +101,35 @@ public class CursosActivity extends AppCompatActivity {
         layoutPerfil.setOnClickListener(v -> {
             Intent perfil = new Intent(CursosActivity.this, PerfilActivity.class);
             startActivity(perfil);
+        });
+    }
+
+    private void buscarCursosDoBackend() {
+        ApiClient.getApiService().getCursos().enqueue(new Callback<List<Curso>>() {
+            @Override
+            public void onResponse(Call<List<Curso>> call, Response<List<Curso>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    listaDeCursos.clear();
+                    
+                    // Como a API geral de cursos não devolve se o usuário está inscrito ou não,
+                    // todos virão como "Disponível" por padrão (visto na classe Curso.java).
+                    for (Curso c : response.body()) {
+                        if (c.getStatus() == null) {
+                            c.setStatus("Disponível");
+                        }
+                    }
+                    listaDeCursos.addAll(response.body());
+                    adapter.notifyDataSetChanged();
+                } else {
+                    Toast.makeText(CursosActivity.this, "Erro ao carregar os cursos.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Curso>> call, Throwable t) {
+                Toast.makeText(CursosActivity.this, "Falha na conexão: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e("API", "Erro na API de cursos: ", t);
+            }
         });
     }
 }

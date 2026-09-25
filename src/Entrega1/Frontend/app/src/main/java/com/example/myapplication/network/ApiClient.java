@@ -4,34 +4,23 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
- * Configuração central do Retrofit usado por todas as telas do app.
+ * Classe que cria a conexão com o backend usando o Retrofit.
  *
- * BASE_URL aponta para o backend Node/Express (src/Entrega 1/Backend)
- * rodando localmente (npm start), acessado a partir do EMULADOR Android.
- *
- * 10.0.2.2 é o endereço especial que o emulador usa para chegar ao
- * "localhost" da máquina onde ele está rodando. Se o teste for feito em
- * um celular físico na mesma rede Wi-Fi, troque por
- * "http://SEU_IP_LOCAL:3000/" (ex.: "http://192.168.1.50:3000/"). Se o
- * backend for publicado (Render, etc.), troque pela URL pública.
+ * BASE_URL é o endereço do servidor Node/Express. 10.0.2.2 é o
+ * endereço que o EMULADOR usa para chegar no "localhost" da sua
+ * máquina (onde o backend está rodando com "npm start"). Se testar em
+ * um celular físico, troque pelo IP da sua máquina na rede Wi-Fi.
  */
 public final class ApiClient {
 
-    private static final String BASE_URL = "http://10.0.2.2:3000/";
-
-    private static Retrofit retrofit;
-
-    private ApiClient() {
-        // Classe utilitária; não deve ser instanciada.
-    }
+    private static final String BASE_URL = "https://nextgeneration-seven.vercel.app/";
 
     public static ApiService getApiService() {
-        if (retrofit == null) {
-            retrofit = new Retrofit.Builder()
-                    .baseUrl(BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
-        }
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
         return retrofit.create(ApiService.class);
     }
 }

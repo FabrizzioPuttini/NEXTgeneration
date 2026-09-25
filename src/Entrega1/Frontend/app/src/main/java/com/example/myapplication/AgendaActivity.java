@@ -6,36 +6,30 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.myapplication.aba_cursos.CursosActivity;
+import com.example.myapplication.network.ApiClient;
+import com.example.myapplication.network.SessionManager;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Tela de Agenda do aluno.
  *
- * Neste momento a tela usa dados de exemplo (mock), definidos em
- * carregarAgendaMock(). Quando o backend estiver integrado, basta
- * substituir essa chamada por uma requisição HTTP para
- * GET /api/agenda (ver README do backend em src/Entrega 1/Backend),
- * mantendo o mesmo formato de AgendaItem e reaproveitando o método
- * exibirAgenda() para preencher a tela.
+ * Ao abrir a tela, chamamos o backend (GET /api/agenda) para buscar os
+ * encontros do aluno logado e mostramos um card para cada um.
  */
 public class AgendaActivity extends AppCompatActivity {
 
     LinearLayout agendaContainer, layoutInicio, layoutCursos, layoutAgenda, layoutPerfil;
     TextView textVazio;
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // Recarrega a lista atualizada com as novas inscrições quando a tela volta a aparecer
-        List<AgendaItem> agendaAtualizada = AgendaManager.getInstance().getAgenda();
-        exibirAgenda(agendaAtualizada);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +43,7 @@ public class AgendaActivity extends AppCompatActivity {
         layoutPerfil = findViewById(R.id.layoutPerfil);
         textVazio = findViewById(R.id.textVazio);
 
+        // Menu inferior: troca de tela ao tocar em cada ícone.
         layoutInicio.setOnClickListener(v -> {
             Intent inicio = new Intent(AgendaActivity.this, PaginaInicial.class);
             startActivity(inicio);
@@ -62,38 +57,50 @@ public class AgendaActivity extends AppCompatActivity {
             startActivity(perfil);
         });
 
-        List<AgendaItem> agenda = AgendaManager.getInstance().getAgenda();
-        exibirAgenda(agenda);
+        buscarAgendaDoBackend();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Busca a agenda de novo toda vez que a tela volta a aparecer
+        // (por exemplo, depois de o aluno se inscrever em um curso).
+        buscarAgendaDoBackend();
     }
 
     /**
-     * Dados de exemplo para visualizar a tela antes da integração com o
-     * backend. O formato de cada item já corresponde exatamente ao que
-     * GET /api/agenda devolve (colunas da view my_agenda).
+     * Pede a lista de encontros do aluno logado ao backend.
      */
-    private List<AgendaItem> carregarAgendaMock() {
-        List<AgendaItem> lista = new ArrayList<>();
+    private void buscarAgendaDoBackend() {
+        String token = SessionManager.getToken(this);
+        if (token == null) {
+            Toast.makeText(this, "Usuário não logado!", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        lista.add(new AgendaItem(
-                "2026-03-01", "19:00:00", "21:00:00",
-                "Introdução à Programação", "Aula 1 — Lógica de programação",
-                "Sala 3", false));
+        // "enqueue" faz a chamada em segundo plano e chama o Callback
+        // quando a resposta chegar, sem travar a tela.
+        Call<List<AgendaItem>> chamada = ApiClient.getApiService().getAgenda("Bearer " + token, null);
 
-        lista.add(new AgendaItem(
-                "2026-03-08", "19:00:00", "21:00:00",
-                "Introdução à Programação", "Aula 2 — Variáveis e tipos",
-                "Sala 3", false));
+        chamada.enqueue(new Callback<List<AgendaItem>>() {
+            @Override
+            public void onResponse(Call<List<AgendaItem>> call, Response<List<AgendaItem>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    exibirAgenda(response.body());
+                } else {
+                    Toast.makeText(AgendaActivity.this, "Erro ao carregar a agenda.", Toast.LENGTH_SHORT).show();
+                }
+            }
 
-        lista.add(new AgendaItem(
-                "2026-02-22", "14:00:00", "16:00:00",
-                "Design Gráfico Básico", "Aula 3 — Identidade visual",
-                "Sala 5", true));
-
-        return lista;
+            @Override
+            public void onFailure(Call<List<AgendaItem>> call, Throwable t) {
+                Toast.makeText(AgendaActivity.this, "Falha na conexão com o servidor.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     /**
-     * Monta um card por item da agenda dentro do agendaContainer.
+     * Cria um card para cada encontro dentro do agendaContainer.
      * Se a lista estiver vazia, mostra a mensagem de "nenhum encontro".
      */
     private void exibirAgenda(List<AgendaItem> agenda) {
@@ -103,7 +110,6 @@ public class AgendaActivity extends AppCompatActivity {
             textVazio.setVisibility(View.VISIBLE);
             return;
         }
-
         textVazio.setVisibility(View.GONE);
 
         LayoutInflater inflater = LayoutInflater.from(this);
@@ -128,18 +134,20 @@ public class AgendaActivity extends AppCompatActivity {
     }
 
     /**
-     * Formata a data (YYYY-MM-DD) e o intervalo de horário (HH:MM:SS) do
-     * encontro para exibição, ex.: "01/03 · 19:00 - 21:00".
+     * Monta o texto de data e horário do card, ex.: "01/03 · 19:00 - 21:00".
      */
     private String formatarDataHora(AgendaItem item) {
+        // Data vem como "2026-03-01"; pegamos só dia/mês.
         String[] partesData = item.activityDate.split("-");
-        String dataFormatada = partesData.length == 3
-                ? partesData[2] + "/" + partesData[1]
-                : item.activityDate;
+        String dataFormatada = partesData[2] + "/" + partesData[1];
 
-        String horaInicio = item.startTime.length() >= 5 ? item.startTime.substring(0, 5) : item.startTime;
-        String horaFim = item.endTime.length() >= 5 ? item.endTime.substring(0, 5) : item.endTime;
+        // Hora vem como "19:00:00"; pegamos só HH:mm.
+        String horaInicio = item.startTime.substring(0, 5);
 
+        if (item.endTime == null) {
+            return dataFormatada + " · " + horaInicio;
+        }
+        String horaFim = item.endTime.substring(0, 5);
         return dataFormatada + " · " + horaInicio + " - " + horaFim;
     }
 }

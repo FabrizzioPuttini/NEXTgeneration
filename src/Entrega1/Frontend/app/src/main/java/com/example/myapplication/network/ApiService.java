@@ -30,8 +30,23 @@ public interface ApiService {
             @Header("Authorization") String authorization,
             @Query("from") String from
     );
+    
+    @GET("api/cursos")
+    Call<List<com.example.myapplication.aba_cursos.Curso>> getCursos();
+    
+    @POST("api/cursos/{id}/inscricao")
+    Call<Void> inscreverCurso(
+            @Header("Authorization") String authorization,
+            @retrofit2.http.Path("id") String cursoId
+    );
+    
     @GET("api/perfil")
     Call<PerfilResponse> getPerfil(
+            @Header("Authorization") String authorization
+    );
+
+    @GET("api/inicio")
+    Call<InicioResponse> getDadosInicio(
             @Header("Authorization") String authorization
     );
     @POST("api/auth/login")

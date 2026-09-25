@@ -22,18 +22,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
-    <Button
-        android:id="@+id/btnVerAgenda"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Ir para Agenda ->"
-        android:textSize="12sp"
-        style="?attr/borderlessButtonStyle"
-        android:textColor="#0000FF"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/tvTituloCursos" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvCursos"
         android:layout_width="0dp"
@@ -41,7 +29,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginHorizontal="16dp"
         app:layout_constraintTop_toBottomOf="@id/tvTituloCursos"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/menu"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         tools:listitem="@layout/item_curso" />

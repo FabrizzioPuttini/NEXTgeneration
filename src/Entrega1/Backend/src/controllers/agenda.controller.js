@@ -1,4 +1,4 @@
-// Controller de agenda.
+ // Controller de agenda.
 // Responsável por listar os encontros/aulas do aluno logado.
 //
 // O schema atual (schema.sql) não tem mais a view "my_agenda" usada
