@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/perfil"
+    android:background="@color/background"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".PerfilActivity">
+
+    <ImageView
+        android:id="@+id/avatarPerfil"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="30dp"
+        app:srcCompat="@drawable/user_avatar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textNome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="24dp"
+        android:layout_marginTop="38dp"
+        android:layout_marginLeft="10dp"
+        android:text="Nome Aluno"
+        android:fontFamily="sans-serif-black"
+        app:layout_constraintStart_toEndOf="@id/avatarPerfil"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textEscola"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="10dp"
+        android:text="Colégio Aluno"
+        app:layout_constraintStart_toEndOf="@id/avatarPerfil"
+        app:layout_constraintTop_toBottomOf="@+id/textNome" />
+
+    <LinearLayout
+        android:id="@+id/menuPerfil"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="start"
+        android:backgroundTint="@color/background"
+        android:layout_marginHorizontal="35dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/avatarPerfil"
+        app:layout_constraintBottom_toTopOf="@+id/btnSair">
+
+        <LinearLayout
+            android:id="@+id/layoutPresenca"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="12dp"
+            android:backgroundTint="@color/background"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@color/white">
+
+            <ImageView
+                android:id="@+id/imgPresenca"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                app:srcCompat="@drawable/qrcode" />
+
+            <TextView
+                android:id="@+id/txtPresenca"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="10dp"
+                android:textSize="17dp"
+                android:text="Registro de Presença"
+                android:fontFamily="sans-serif-black" />
+
+            <ImageView
+                android:id="@+id/setaPresenca"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/seta" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutCertificados"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/background"
+            android:paddingVertical="12dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@color/white">
+
+            <ImageView
+                android:id="@+id/imgCertificados"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                app:srcCompat="@drawable/certificados" />
+
+            <TextView
+                android:id="@+id/txtCertificados"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="10dp"
+                android:textSize="17dp"
+                android:text="Meus certificados"
+                android:fontFamily="sans-serif-black" />
+
+            <ImageView
+                android:id="@+id/setaCertificados"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/seta" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutConfiguracoes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/background"
+            android:paddingVertical="12dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@color/white">
+
+            <ImageView
+                android:id="@+id/imgConfiguracoes"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                app:srcCompat="@drawable/configuracoes" />
+
+            <TextView
+                android:id="@+id/txtConfiguracoes"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="10dp"
+                android:textSize="17dp"
+                android:text="Configurações"
+                android:fontFamily="sans-serif-black" />
+
+            <ImageView
+                android:id="@+id/setaConfiguracoes"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/seta" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutAjuda"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/background"
+            android:paddingVertical="12dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@color/white">
+
+            <ImageView
+                android:id="@+id/imgAjuda"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                app:srcCompat="@drawable/ajuda" />
+
+            <TextView
+                android:id="@+id/txtAjuda"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="10dp"
+                android:textSize="17dp"
+                android:text="Ajuda e Suporte"
+                android:fontFamily="sans-serif-black" />
+
+            <ImageView
+                android:id="@+id/setaAjuda"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/seta" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutSobre"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/background"
+            android:paddingVertical="12dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@color/white">
+
+            <ImageView
+                android:id="@+id/imgSobre"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                app:srcCompat="@drawable/informacoes" />
+
+            <TextView
+                android:id="@+id/txtSobre"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="10dp"
+                android:textSize="17dp"
+                android:text="Sobre a Próxima Etapa"
+                android:fontFamily="sans-serif-black" />
+
+            <ImageView
+                android:id="@+id/setaSobre"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/seta" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/btnSair"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="25dp"
+        android:textSize="20dp"
+        android:textColor="@color/red"
+        android:fontFamily="sans-serif-black"
+        android:text="Sair da conta"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/AcessoSite1" />
+
+    <TextView
+        android:id="@+id/AcessoSite1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Próxima Etapa"
+        android:textSize="20sp"
+        android:fontFamily="sans-serif-black"
+        android:textColor="@color/selected_green"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/AcessoSite2" />
+
+    <TextView
+        android:id="@+id/AcessoSite2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:text="proximaetapa.org.br"
+        android:textColor="@color/gray"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toTopOf="@+id/menu"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/menu"
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@color/menuColor"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:id="@+id/layoutInicio"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@color/menuColor">
+
+            <ImageView
+                android:id="@+id/imgInicio"
+                android:layout_width="60dp"
+                android:layout_height="35dp"
+                app:srcCompat="@drawable/home_unselected" />
+
+            <TextView
+                android:id="@+id/txtInicio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Início"
+                android:gravity="center"
+                android:fontFamily="sans-serif-black" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutCursos"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@color/menuColor">
+
+            <ImageView
+                android:id="@+id/imgCursos"
+                android:layout_width="60dp"
+                android:layout_height="35dp"
+                app:srcCompat="@drawable/courses_unselected" />
+
+            <TextView
+                android:id="@+id/txtCursos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cursos"
+                android:gravity="center"
+                android:fontFamily="sans-serif-black" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutAgenda"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@color/menuColor">
+
+            <ImageView
+                android:id="@+id/imgAgenda"
+                android:layout_width="60dp"
+                android:layout_height="35dp"
+                app:srcCompat="@drawable/calendar_unselected" />
+
+            <TextView
+                android:id="@+id/txtAgenda"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Agenda"
+                android:gravity="center"
+                android:fontFamily="sans-serif-black" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutPerfil"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@color/menuColor">
+
+            <ImageView
+                android:id="@+id/imgPerfil"
+                android:layout_width="60dp"
+                android:layout_height="35dp"
+                app:srcCompat="@drawable/profile_selected" />
+
+            <TextView
+                android:id="@+id/txtPerfil"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/selected_green"
+                android:text="Perfil"
+                android:gravity="center"
+                android:fontFamily="sans-serif-black" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

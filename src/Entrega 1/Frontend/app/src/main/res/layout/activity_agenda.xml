@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/agenda"
+    android:background="@color/background"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AgendaActivity">
+
+    <!-- Cabeçalho da tela -->
+    <TextView
+        android:id="@+id/titulo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="20dp"
+        android:text="Sua Agenda"
+        android:textSize="26sp"
+        android:textColor="@color/objectColor"
+        android:fontFamily="sans-serif-black"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/subtitulo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginStart="20dp"
+        android:text="Confira seus próximos encontros"
+        android:textSize="14sp"
+        android:textColor="@color/gray"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/titulo" />
+
+    <!-- Lista de encontros, preenchida em tempo de execução -->
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        app:layout_constraintTop_toBottomOf="@id/subtitulo"
+        app:layout_constraintBottom_toTopOf="@id/menu"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:id="@+id/agendaContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+    </ScrollView>
+
+    <!-- Mensagem exibida quando não há encontros na agenda -->
+    <TextView
+        android:id="@+id/textVazio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nenhum encontro encontrado na sua agenda."
+        android:textColor="@color/gray"
+        android:textSize="14sp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/subtitulo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="40dp"
+        android:gravity="center" />
+
+    <!-- Barra de navegação inferior, mesmo padrão da tela de Perfil -->
+    <LinearLayout
+        android:id="@+id/menu"
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@color/menuColor"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:id="@+id/layoutInicio"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@color/menuColor">
+
+            <ImageView
+                android:id="@+id/imgInicio"
+                android:layout_width="60dp"
+                android:layout_height="35dp"
+                app:srcCompat="@drawable/home_unselected" />
+
+            <TextView
+                android:id="@+id/txtInicio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Início"
+                android:gravity="center"
+                android:fontFamily="sans-serif-black" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutCursos"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@color/menuColor">
+
+            <ImageView
+                android:id="@+id/imgCursos"
+                android:layout_width="60dp"
+                android:layout_height="35dp"
+                app:srcCompat="@drawable/courses_unselected" />
+
+            <TextView
+                android:id="@+id/txtCursos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cursos"
+                android:gravity="center"
+                android:fontFamily="sans-serif-black" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutAgenda"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@color/menuColor">
+
+            <ImageView
+                android:id="@+id/imgAgenda"
+                android:layout_width="60dp"
+                android:layout_height="35dp"
+                app:srcCompat="@drawable/calendar_selected" />
+
+            <TextView
+                android:id="@+id/txtAgenda"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Agenda"
+                android:textColor="@color/selected_green"
+                android:gravity="center"
+                android:fontFamily="sans-serif-black" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutPerfil"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@color/menuColor">
+
+            <ImageView
+                android:id="@+id/imgPerfil"
+                android:layout_width="60dp"
+                android:layout_height="35dp"
+                app:srcCompat="@drawable/profile_unselected" />
+
+            <TextView
+                android:id="@+id/txtPerfil"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Perfil"
+                android:gravity="center"
+                android:fontFamily="sans-serif-black" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

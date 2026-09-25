@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:background="@drawable/gradiente"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        android:layout_marginTop="120dp"
+        app:srcCompat="@drawable/logo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/titulo"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:text="BEM-VINDO(A) AO PROXIMA ETAPA!"
+        android:textSize="40dp"
+        android:textColor="@color/white"
+        android:fontFamily="sans-serif-black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/logo"/>
+
+        <Button
+            android:id="@+id/btnLogin"
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            app:cornerRadius="6dp"
+            android:backgroundTint="@color/white"
+            android:textColor="@color/black"
+            android:text="Entrar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/btnCadastro"/>
+
+        <Button
+            android:id="@+id/btnCadastro"
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/translucent"
+            app:cornerRadius="6dp"
+            android:text="Cadastre-se"
+            android:textColor="@color/white"
+            android:layout_marginBottom="60dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/AcessoSite1"/>
+
+    <TextView
+        android:id="@+id/AcessoSite1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Próxima Etapa"
+        android:textSize="20sp"
+        android:fontFamily="sans-serif-black"
+        android:textColor="@color/yellow"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/AcessoSite2" />
+
+    <TextView
+        android:id="@+id/AcessoSite2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:text="proximaetapa.org.br"
+        android:textColor="@color/gray"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

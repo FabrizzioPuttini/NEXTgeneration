@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Libera tráfego HTTP (sem TLS) apenas para os endereços usados durante o
+    desenvolvimento local:
+      - 10.0.2.2  -> como o emulador Android enxerga o "localhost" da
+                     máquina onde o backend está rodando (npm start).
+      - localhost -> caso o teste seja feito rodando o app dentro do
+                     próprio emulador/host em cenários específicos.
+
+    Qualquer outro host (produção, backend hospedado) continua exigindo
+    HTTPS normalmente, pois cleartextTrafficPermitted só é true para os
+    domains listados aqui.
+-->
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="false">10.0.2.2</domain>
+        <domain includeSubdomains="false">localhost</domain>
+    </domain-config>
+</network-security-config>
