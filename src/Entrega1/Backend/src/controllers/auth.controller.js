@@ -1,4 +1,4 @@
-const { supabase } = require('../config/supabase');
+const supabaseConfig = require('../config/supabase');
 
 async function cadastrar(req, res) {
   try {
@@ -10,7 +10,7 @@ async function cadastrar(req, res) {
       });
     }
 
-    const { data, error } = await supabase.auth.signUp({
+    const { data, error } = await supabaseConfig.supabase.auth.signUp({
       email,
       password: senha,
       options: {
@@ -48,7 +48,7 @@ async function login(req, res) {
       });
     }
 
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabaseConfig.supabase.auth.signInWithPassword({
       email,
       password: senha
     });

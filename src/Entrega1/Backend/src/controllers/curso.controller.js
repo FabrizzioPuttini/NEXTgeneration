@@ -1,12 +1,18 @@
-// src/controllers/curso.controller.js
-const supabase = require('../config/supabase');
+const supabaseConfig = require('../config/supabase');
 
 // Lista todos os cursos
 exports.listarCursos = async (req, res) => {
     try {
-        // Busca todos os registros da tabela 'cursos' no Supabase
-        const { data, error } = await supabase
-            .from('cursos')
+        const client = req.supabase || supabaseConfig.supabase;
+
+        if (!client || typeof client.from !== 'function') {
+            console.error("Supabase client is invalid:", client);
+            return res.status(500).json({ error: 'Erro de configuração do banco de dados.' });
+        }
+
+        // Busca todos os registros da tabela 'courses' no Supabase
+        const { data, error } = await client
+            .from('courses')
             .select('*');
 
         if (error) throw error;
@@ -22,9 +28,10 @@ exports.listarCursos = async (req, res) => {
 exports.buscarCursoPorId = async (req, res) => {
     try {
         const { id } = req.params;
-        
-        const { data, error } = await supabase
-            .from('cursos')
+        const client = req.supabase || supabaseConfig.supabase;
+
+        const { data, error } = await client
+            .from('courses')
             .select('*')
             .eq('id', id)
             .single();
@@ -39,5 +46,29 @@ exports.buscarCursoPorId = async (req, res) => {
     } catch (error) {
         console.error("Erro ao buscar curso:", error);
         return res.status(500).json({ error: 'Erro ao buscar os detalhes do curso.' });
+    }
+};
+
+// Inscreve o aluno logado em um curso
+exports.inscreverCurso = async (req, res) => {
+    try {
+        const userId = req.userId;
+        const cursoId = req.params.id;
+        const client = req.supabase || supabaseConfig.supabase;
+
+        const { error } = await client
+            .from('enrollments')
+            .insert({
+                user_id: userId,
+                course_id: cursoId,
+                status: 'enrolled'
+            });
+
+        if (error) throw error;
+
+        return res.status(200).json({ message: 'Inscrição realizada com sucesso.' });
+    } catch (error) {
+        console.error("Erro ao realizar inscrição:", error);
+        return res.status(500).json({ error: 'Erro ao realizar inscrição no curso.' });
     }
 };
