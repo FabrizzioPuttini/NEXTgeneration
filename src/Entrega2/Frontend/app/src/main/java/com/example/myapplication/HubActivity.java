@@ -399,7 +399,7 @@ public class HubActivity extends AppCompatActivity implements ResourceListFragme
           menu(
               rows,
               "Próximo encontro: " + s(next, "title"),
-              join(s(next, "activity_date") + " • " + s(next, "start_time"), s(next, "location")),
+              join(SchedulePresentation.agendaDate(s(next, "activity_date")) + " · " + SchedulePresentation.timeRange(s(next, "start_time"), s(next, "end_time")), s(next, "location")),
               "agenda");
         } else
           menu(
@@ -544,7 +544,7 @@ public class HubActivity extends AppCompatActivity implements ResourceListFragme
               rows.add(
                   new Row(
                       s(o, "title"),
-                      join(s(o, "course_title"), "Confirmada • " + s(o, "scanned_at")),
+                      join(s(o, "course_title"), "Confirmada • " + SchedulePresentation.courseDate(s(o, "scanned_at"))),
                       null,
                       null));
               break;
@@ -552,24 +552,24 @@ public class HubActivity extends AppCompatActivity implements ResourceListFragme
               rows.add(
                   new Row(
                       s(o, "title"),
-                      join("Carga horária: " + s(o, "workload") + "h", s(o, "issued_at")),
+                      join("Carga horária: " + s(o, "workload") + "h", SchedulePresentation.courseDate(s(o, "issued_at"))),
                       "Abrir certificado",
                       () -> certificate(s(o, "certificate_url"))));
               break;
             case "resultados":
               rows.add(
                   new Row(
-                      s(o, "classificacao"), join(s(o, "resumo"), s(o, "created_at")), null, null));
+                      s(o, "classificacao"), join(s(o, "resumo"), SchedulePresentation.courseDate(s(o, "created_at"))), null, null));
               break;
             case "comunicados":
               rows.add(
-                  new Row(s(o, "titulo"), join(s(o, "conteudo"), s(o, "created_at")), null, null));
+                  new Row(s(o, "titulo"), join(s(o, "conteudo"), SchedulePresentation.courseDate(s(o, "created_at"))), null, null));
               break;
             case "mensagens":
               rows.add(
                   new Row(
                       "equipe".equals(s(o, "remetente")) ? "Equipe Próxima Etapa" : "Você",
-                      join(s(o, "conteudo"), s(o, "created_at")),
+                      join(s(o, "conteudo"), SchedulePresentation.courseDate(s(o, "created_at"))),
                       null,
                       null));
               break;
@@ -577,7 +577,7 @@ public class HubActivity extends AppCompatActivity implements ResourceListFragme
               rows.add(
                   new Row(
                       s(o, "titulo") + (bool(o, "lida") ? "" : " • Nova"),
-                      join(s(o, "conteudo"), s(o, "created_at")),
+                      join(s(o, "conteudo"), SchedulePresentation.courseDate(s(o, "created_at"))),
                       bool(o, "lida") ? null : "Marcar como lida",
                       () ->
                           mutate(

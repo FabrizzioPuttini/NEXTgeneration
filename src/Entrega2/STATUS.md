@@ -1,92 +1,87 @@
-# Situação da Entrega 2 - 08/11/2026
+# Situação da Entrega 2 — 09/11/2026
 
-Implementação local concluída na branch `Luiz-entrega2`. **Integração hospedada e
-aceite completo pendentes.** Reparo de duplicidades e migração Supabase aplicados em08/11,
-após confirmação do Luiz, pelo Chrome pessoal. A branch foi enviada ao GitHub e o código foi revisado por Luiz. Merge, deploy E2,
-acesso administrativo e validação hospedada ainda precisam de confirmação. Prazo: 09/11 às 08h.
+## Estado publicado
 
-## Entregue localmente
+Código integrado à `main`, com Entrega 1 preservada. API e painel publicados em
+https://nextgeneration-seven.vercel.app/; `/health` e `/admin/` retornaram 200 em 09/11.
+Luiz confirmou cadastro/login no app e acesso ao painel administrativo. O painel
+publicado carregou cursos, encontros/presenças e mensagens na revisão em Chrome.
+A migração `001_entrega2.sql` e o reparo de inscrições foram aplicados em 08/11,
+conforme o [runbook](Backend/docs/migration-runbook.md).
 
-- Android Java/XML com ConstraintLayout e Fragment real, autenticação/refresh,
-  cursos, inscrição, agenda, QR, SQLite por usuário, sincronização, histórico,
-  card, certificados, teste de interesses, comunicados, mensagens e notificações periódicas.
-- API autenticada e SQL transacional com RLS, controle de vagas/duplicidade e QR por atividade.
-- Painel administrativo `/admin/` no mesmo projeto Express/Vercel.
-- Contrato HTTP, preflight e runbook, demonstração sintética, roteiro de testes.
-- [APK debug HTTPS](<../../documentos/Entrega 2/Programação para Dispositivos Móveis/proxima-etapa-entrega2.apk>),
-  UML PDF escolhido pela equipe, guia POO, conferência estatística e boxplots finais em PDF/PNG, com base CSV.
+Prazo informado pela equipe:09/11 às 23h56. Apresentação:19/11 às 19h (São Paulo).
 
-## Verificações executadas
+## Correções autorizadas em 09/11
+
+Luiz autorizou commit/push na main e ajuste no Supabase. A migração 002 foi aplicada
+e conferida. Os commits foram preparados localmente; o push foi recusado por token
+GitHub inválido. O deploy das correções permanece pendente de autenticação e envio.
+
+- Atualização compatível de `body-parser` para 2.4.0 e `qs` para 6.17.1.
+- Cadastro diferencia dados inválidos (400) de indisponibilidade/limitação temporária (503).
+- Curso de encontro fixo após criação: API recusa mudança com 409; painel desabilita
+  seletor ao editar e mantém escolha ao criar. Envie título/data/cancelamento para editar.
+- Proteção complementar do vínculo no banco aplicada pela migração 002.
+- Cabeçalhos de segurança configurados no Express e no `vercel.json` para CDN.
+  A resposta hospedada anterior ainda não trazia os cabeçalhos da CDN; verificar após deploy.
+- READMEs e contratos atualizados para distinguir estado publicado e alterações locais.
+
+O APK não foi alterado nesta rodada. A versão da pasta de Dispositivos Móveis contém
+a correção de datas e aponta para a API HTTPS publicada.
+
+## Evidências e limites
 
 | Verificação | Resultado |
 |---|---|
-| Backend HTTP e SQL/PGlite, incluindo reparo |27/27 PASS; revisão independente do SQL PASS|
-| Supabase remoto, conferência após aplicação |6 inscrições únicas,7 cópias arquivadas,0 duplicatas;13 registros preservados exatamente contra backup;7 tabelas E2 com RLS,9 funções|
-| Painel núcleo sessão/QR |9/9 PASS|
-| Chrome real, login/permissão/CRUD/QR/comunicação/logout |PASS em fixture local|
-| Responsividade painel390px |Sem overflow observado, screenshots salvos|
-| Android JVM, reexecutado em 08/11 |21/21 PASS, 0 falhas e 0 ignorados|
-| Android instrumentação Pixel_10a |6/6 PASS (3SQLite+2Fragment+smoke)|
-| Android build APK |PASS; atualizado com PDF de demonstração embarcado|
-| Certificado demo embarcado, testes no emulador |4/4 PASS: opção offline/recriação, compartilhamento somente leitura, exportação e isolamento; leitor externo/seletor ainda exigem teste manual|
-| Android lint, reexecutado em 08/11 |0 erros, 102 avisos; não suprimidos|
-| Redmi Note 8, backend local |QR online, leitura offline e sincronização sem duplicação, leitor na vertical: confirmados por Luiz|
-| Certificado no Redmi, backend local |Abertura e download do PDF de demonstração confirmados por Luiz|
-| Código Entrega1 |Sem alterações|
-| Padrões de segredos locais |Nenhuma ocorrência nos padrões examinados; Gitleaks ausente|
-| Doctor/global product-final-eval strict |FAIL/BLOCKED; sem alegação ready-for-review|
+| Android JVM |22 testes aprovados; reexecutados em 09/11|
+| Android build e lint |Build aprovado; 0 erros e 102 avisos de lint|
+| Layouts Entrega2 |Nenhum LinearLayout próprio; ConstraintLayout e containers especializados|
+| APK versionado |Idêntico ao build conferido; URL HTTPS e hash no README da disciplina|
+| Backend e painel |34/34 HTTP/SQL e 9/9 núcleo do painel; [relatório das correções](Backend/docs/revisao-2026-11-09.md)|
+| Dependências de produção |npm audit: 0 vulnerabilidades em 09/11 após atualização local|
+| API pública |health 200; rotas privadas sem token 401|
+| Painel local corrigido |Chrome confirmou curso bloqueado na edição e habilitado na criação|
+| Arquivos acadêmicos |APK, UML de 1 página, banner, análise/CSV/boxplot, extensão e declaração IA presentes|
+| Links Markdown locais |Nenhum link quebrado detectado|
 
-Os relatórios detalhados das revisões e as capturas de teste permanecem locais,
-fora do versionamento. O resumo dos resultados e limites está nesta página.
+A revisão estática Android conferiu datas, sessão, cache separado por usuário, QR,
+sincronização e certificados. Não substitui teste funcional atual no aparelho.
 
-## Pendências para a demonstração integrada
-
-1. Banco atualizado: `000a_repair_enrollments.sql` e `001_entrega2.sql` aplicados no
-   projeto `hejcktjrlursifgcjdon`. Não reaplicar para testar. Conferência descrita no runbook.
-2. Confirmar que a conta administrativa indicada por Luiz consegue entrar no painel
-   publicado. Concessão do papel e teste remoto ainda não comprovados nesta revisão.
-3. Confirmar merge e o responsável publicar na Vercel com Root Directory
-   `src/Entrega2/Backend`, mantendo as variáveis Supabase corretas.
-4. Testar com aluno/admin fictícios na URL hospedada: login, inscrição, QR repetido,
-   perda de internet, histórico, mensagens e abertura de certificado real autorizado.
-5. Testar recusa de permissão, fonte ampliada e legibilidade nativa. Câmera física e
-   leitor na vertical já foram confirmados no teste local; repetir o fluxo na API publicada.
-
-**Atenção à compatibilidade:** a migração restringe escrita direta em inscrições/presenças.
-Retornar somente ao backend E1 não restaura essas operações. O runbook explica a janela
-e o rollback; a mudança não deve ser aplicada isolada da publicação E2.
-
-O acesso ao Supabase pelo Chrome pessoal foi restabelecido e usado no preflight,
-backup e aplicação. A indisponibilidade de inscrições E1 até a publicação E2 foi
-informada e aceita pelo Luiz antes do apply. Houve limitações no controle do emulador; os testes ópticos foram concluídos
-por Luiz no celular físico, usando o backend local.
+Testes anteriores confirmados por Luiz no Redmi com backend local: QR online,
+fila offline/sincronização sem duplicação, câmera vertical, tema claro/escuro,
+abertura e salvamento do certificado demonstrativo. Instrumentação anterior foi
+executada no emulador; não foi repetida nesta rodada para preservar a sessão do usuário.
+A busca limitada de padrões de tokens/chaves não encontrou ocorrências nos arquivos
+examinados; não equivale a auditoria integral de segredos ou do histórico Git.
 
 ## Materiais acadêmicos
 
-- Documento COM EMPRESA: ainda é modelo; Luiz ficou responsável por preencher dados e atividade real.
-- Banner: PDF final enviado pela equipe incluído na pasta de Projeto Interdisciplinar da Entrega 2.
-- Dados: identificação atualizada com os integrantes do README; frase sobre presença por QR e referências corrigidas no DOCX. Cálculos e gráficos preservados.
-- POO: PDF escolhido pela equipe, com as duas páginas reunidas em uma só e o conteúdo preservado. Luiz informou que um integrante confirmou a aprovação desse diagrama pela professora. A pendência de escolha do diagrama está resolvida segundo essa confirmação; o README distingue modelo de domínio de classes implementadas.
-- Geradores auxiliares e PDF de referência antigo removidos por decisão da equipe. Os arquivos finais permanecem disponíveis.
+- [Extensão preenchida pela equipe](<../../documentos/Documento - Projeto de Extensão - COM Empresa - 2026_1 - Proxima Etapa.docx>) e
+  [declaração IA](<../../documentos/Ficha de Declaracao Uso IA - FECAP.docx>) estão em documentos.
+  O modelo original continua separado; fatos, campos e assinaturas devem ser conferidos pela equipe.
+- Banner final incluído na pasta de Projeto Interdisciplinar.
+- UML escolhido pela equipe, reunido em uma página; Luiz informou aprovação da professora.
+  O guia descreve a relação entre modelo de domínio e implementação.
+- Documento de análise, base simulada, resumo e boxplots presentes. Não houve nova
+  auditoria integral dos cálculos nesta rodada de correção do software.
+- [Contas e roteiro de avaliação](<../../documentos/Entrega 2/Projeto Interdisciplinar - Aplicativo Móvel/ACESSO_AVALIACAO.md>).
+  Senhas entregues separadamente aos professores, fora do repositório público.
 
-Nenhum resultado social, atividade com ONG, assinatura ou certificado final foi inventado.
-O app inclui um PDF explicitamente demonstrativo, sem validade, para abertura e
-salvamento offline. Não representa certificado final da ONG nem depende de deploy.
+## Para fechar a validação integrada
 
-## Limites técnicos conhecidos
+1. Restabelecer autenticação GitHub, enviar os commits autorizados e confirmar deploy.
+2. Após deploy, conferir headers e repetir login do avaliador, inscrição, QR online,
+   repetição sem duplicidade, offline/sincronização dentro da validade e histórico nos dois clientes.
+3. Conferir visualmente datas no APK final; testar fonte ampliada e recusa de permissões.
+4. Preparar encontro para 19/11 às 19h e inscrição do aluno de demonstração. Os encontros
+   vistos no painel em 09/11 eram de outubro. Gere QR próximo ao teste porque expira.
+5. Conferir certificado real autorizado, se usado na apresentação; o PDF demonstrativo
+   embarcado não representa emissão real nem conclusão de curso.
 
-Fixture local não replica Auth/PostgREST/CDN hospedados. Concorrência multiconexão SQL,
-refresh/worker com servidor real, push instantâneo e paginação não foram validados ou
-implementados além do contrato descrito. WorkManager depende das restrições do Android;
-QR offline pode expirar antes da sincronização. Certificados são documentos HTTPS
-previamente emitidos, não uma emissão automática baseada em presença.
+## Limites do produto
 
-## Conferência antes do envio dos ajustes visuais
-
-Estrutura confrontada com o enunciado, especialmente páginas6–7: documentação organizada por matéria; fonte em src/Entrega2/Frontend e Backend; painel em Backend/public/admin; APK HTTPS em Programação para Dispositivos Móveis. O PDF não prescreve nomes exatos de pastas.
-
-Conferência XML:8 arquivos de layout,8 instâncias ConstraintLayout, nenhuma instância LinearLayout ou RelativeLayout. Componentes especializados (RecyclerView, SwipeRefreshLayout, NestedScrollView, MaterialCardView e FragmentContainerView) permanecem necessários; LinearLayoutManager é o organizador da lista, não um LinearLayout.
-
-Última rodada Android:21/21 JVM,12/12 instrumentados direcionados, lint0 erros/102 avisos. Luiz confirmou tema/e-mail e aprovou visualmente Cursos e Agenda no Redmi por capturas. O APK de entrega teve hash e endpoint HTTPS conferidos.
-
-Isso confirma a organização e o uso dos layouts, não elimina pendências de extensão e deploy/validação online; a ressalva anterior sobre a escolha do UML foi posteriormente resolvida pela confirmação da equipe descrita acima.
+Notificações são consulta periódica, não push instantâneo. QR offline pode expirar
+antes do envio; app não confirma presença sem servidor. Certificados são PDFs HTTPS
+previamente emitidos, não emissão automática por frequência. Teste de interesses é
+orientativo, sem validade psicométrica. Não há paginação além dos limites do contrato.
+Concorrência SQL multiconexão não foi demonstrada pelos testes PGlite locais.

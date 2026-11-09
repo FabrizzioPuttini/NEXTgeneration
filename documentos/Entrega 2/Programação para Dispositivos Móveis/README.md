@@ -4,10 +4,11 @@
 
 Versão 2.0, versionCode 2, minSdk 24, assinatura debug de desenvolvimento.
 API configurada: `https://nextgeneration-seven.vercel.app/`. Este APK não usa a fixture local.
-A migração Supabase foi aplicada em 08/11/2026. Deploy E2 e teste integrado no ambiente
-publicado ainda precisam de confirmação.
+A migração Supabase foi aplicada em 08/11/2026. Em 09/11/2026, o painel respondeu HTTP 200 e a API `/health` retornou `status: ok`. O teste completo de QR no ambiente publicado ainda está pendente.
 
-SHA256: `6a81b5c83260e1b73bbc373d2294c4582554ecf7762f6f63547c93dddb238475`.
+[Contas de avaliação, painel e instruções de acesso](ACESSO_AVALIACAO.md).
+
+SHA256: `e0ceb4077091cf65db8f76621119d8d2f107511ba666277dee8d9c0023611062`.
 
 ## Verificação
 
@@ -36,3 +37,13 @@ Verificação do recurso demo: 4/4 testes instrumentados específicos no emulado
 com API indisponível, incluindo recriação da tela, URI de leitura, cópia do PDF e
 isolamento do diretório compartilhado. Build/JVM/lint aprovados. A escolha de pasta
 no seletor e a abertura em leitor externo precisam ser confirmadas no celular.
+
+## Conferência do APK em 09/11/2026
+
+APK recompilado a partir do código Android atual, com `API_BASE_URL=https://nextgeneration-seven.vercel.app/`. Build `assembleDebug` aprovado e assinatura verificada. O arquivo versionado foi substituído por esse artefato; a versão permanece 2.0 (versionCode 2). Esta conferência não repete os testes funcionais no aparelho.
+
+## Datas nas telas
+
+Em 09/11/2026, as datas de mensagens, comunicados, notificações, resultados do perfil, presenças, certificados e resumo do próximo encontro foram ligadas ao formatador já utilizado em cursos e agenda. Instantes da API são exibidos em horário de São Paulo (ex.: `09/11/2026 · 16h27`), sem expor o timestamp ISO. Datas/horários separados da agenda são preservados como horário local do encontro.
+
+Verificação desta correção: 22 testes JVM aprovados, build aprovado e lint com 0 erros e 102 avisos. Teste de regressão cobre os dois timestamps enviados na captura da conversa. A revisão foi feita no código e nos testes; a conferência visual do novo APK no aparelho ainda deve ser realizada.

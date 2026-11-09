@@ -1,6 +1,8 @@
 # Contrato HTTP — Entrega 2, v1
 
-Contrato congelado para integração Android em 08/11/2026. Alterações posteriores devem ser comunicadas.
+Contrato de integração Android. Revisão local de 09/11/2026: cadastro diferencia
+falhas operacionais e encontros não podem trocar de curso após criação. Publicação
+desta revisão depende do envio dos commits e deploy; migração002 aplicada em09/11.
 
 Todas as rotas abaixo exigem `Authorization: Bearer <access_token>` salvo login/cadastro/refresh/health.
 Datas são ISO8601 UTC; identificadores são strings UUID. Erros: `{error: string, code: string}`.
@@ -8,6 +10,10 @@ Falhas de dependência: 503. JWT ausente/inválido: 401. Administrador não auto
 Listas retornam arrays (sem envelope). Campos adicionais são compatíveis.
 
 ## Android
+
+- `POST /api/auth/cadastro {email,senha,nome}` →201. Dados inválidos ou rejeitados
+  pelo Auth retornam400; falhas operacionais, rede e limitação temporária retornam503,
+  sem expor detalhes internos.
 
 - `POST /api/auth/login {email,senha}` → `{access_token,refresh_token,expires_in,expires_at,user:{id},message}` (existente).
 - `POST /api/auth/refresh {refresh_token}` → `{access_token,refresh_token,expires_in,expires_at,user:{id}}`. Falha 401 exige login; preservar fila do mesmo user.id.
@@ -47,8 +53,8 @@ Esta versão não aceita horário autodeclarado pelo celular nem garante aceita�
 - `GET /api/admin/mensagens` → últimas 500 mensagens de suporte em ordem decrescente, com nome; `POST /api/admin/mensagens {userId,conteudo}` → resposta.
 - `POST /api/admin/comunicados {titulo,conteudo}` → comunicado criado.
 
-Painel e APIs usam o mesmo Express/Vercel. Privilégio admin será verificado no banco, sem service_role no browser.
-Banco remoto não foi migrado: os endpoints E2 só funcionarão após aplicar SQL revisado e provisionar admin autorizado.
+Painel e APIs usam o mesmo Express/Vercel. Privilégio admin é verificado no banco, sem service_role no browser.
+Migração aplicada em 08/11/2026; publicação e acesso administrativo confirmados em 09/11.
 
 ## Administração: cadastro e limites
 
@@ -58,7 +64,9 @@ Banco remoto não foi migrado: os endpoints E2 só funcionarão após aplicar SQ
 - `PATCH /api/admin/cursos/:id` → mesmos campos opcionais, ao menos1; curso200.
 - `DELETE /api/admin/cursos/:id` → `{ok:true}`; arquiva, não apaga vínculos.
 - `POST /api/admin/encontros {title,course_id,activity_date,is_cancelled?}` → encontro201.
-- `PATCH /api/admin/encontros/:id` → campos opcionais; encontro200.
+- `PATCH /api/admin/encontros/:id` → título, data e cancelamento opcionais; encontro200.
+  `course_id` é imutável: valor diferente retorna409 `COURSE_IMMUTABLE`. O mesmo UUID
+  é aceito por compatibilidade, mas não é incluído no UPDATE. Para outro curso, crie novo encontro.
 - `DELETE /api/admin/encontros/:id` → `{ok:true}`; cancela e bloqueia QR, preserva histórico.
 - `POST /api/admin/certificados {userId,courseId,certificateUrl,confirmed:true}` → certificado201;
   exige inscrição e confirmação de documento já emitido. Mesma URL/usuário/curso é idempotente sequencialmente.

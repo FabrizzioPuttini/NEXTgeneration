@@ -13,5 +13,9 @@ Materiais anteriores preservados em [Entrega 1](<Entrega 1/>).
 - [Banner final](<Entrega 2/Projeto Interdisciplinar - Aplicativo Móvel/banner-next-generation.pdf>).
 - [Situação e pendências](../src/Entrega2/STATUS.md).
 
-O documento de extensão COM EMPRESA será preenchido pelo Luiz posteriormente,
-conforme combinado. O banner final enviado pela equipe já está incluído na Entrega 2. Não há comprovação de atividade real com a ONG nesta sessão.
+- [Documento de extensão preenchido pela equipe](<Documento - Projeto de Extensão - COM Empresa - 2026_1 - Proxima Etapa.docx>).
+- [Declaração de uso de IA](<Ficha de Declaracao Uso IA - FECAP.docx>).
+
+O arquivo de extensão sem o sufixo “Proxima Etapa” é o modelo original, mantido como
+referência. Para avaliação, utilize o documento preenchido vinculado acima. A equipe
+é responsável pela confirmação dos fatos, campos e assinaturas do documento.

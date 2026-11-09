@@ -2,6 +2,10 @@ package com.example.myapplication.core;
 import org.junit.Test;
 import static org.junit.Assert.*;
 public class SchedulePresentationTest {
+ @Test public void supportMessageTimestampsMatchBrazilianDisplay() {
+  assertEquals("09/11/2026 · 16h27",SchedulePresentation.courseDate("2026-11-09T19:27:45.268988+00:00"));
+  assertEquals("09/11/2026 · 16h27",SchedulePresentation.courseDate("2026-11-09T19:27:57.938+00:00"));
+ }
  @Test public void instantUsesSaoPauloIncludingPreviousDay() {
   assertEquals("08/11/2026 · 21h40",SchedulePresentation.courseDate("2026-11-09T00:40:37.542Z"));
   assertEquals("08/11/2026 · 21h40",SchedulePresentation.courseDate("2026-11-08T21:40:37-03:00"));

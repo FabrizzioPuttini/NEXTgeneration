@@ -65,6 +65,7 @@ test('admin redireciona somente URL sem barra e não entra em loop', async () =>
     const page = await fetch(base + '/admin/', { redirect: 'manual' });
     assert.equal(page.status, 200);
     assert.match(page.headers.get('content-type'), /text\/html/);
+    assert.equal(page.headers.get('x-frame-options'), 'DENY');
   });
 });
 test('login preserva senha e refresh devolve identidade e expiração', async () => {
@@ -200,5 +201,62 @@ test('perfil devolve apenas identidade autenticada, com email e escola, sem inve
     })).json();
     assert.equal(admin.email, 'admin@example.test');
     assert.notEqual(admin.nome, 'Aluno Demonstração');
+  });
+});
+
+test('cadastro distingue validação de indisponibilidade do provedor sem vazar detalhes', async () => {
+  for (const [upstreamStatus, expectedStatus, expectedCode] of [
+    [400, 400, 'INVALID_INPUT'], [422, 400, 'INVALID_INPUT'],
+    [503, 503, 'SERVICE_UNAVAILABLE'], [500, 503, 'SERVICE_UNAVAILABLE'],
+    [429, 503, 'SERVICE_UNAVAILABLE'], [undefined, 503, 'SERVICE_UNAVAILABLE'],
+  ]) {
+    const createClient = () => ({ auth: { signUp: async () => ({ error: { status: upstreamStatus, message: 'private-provider-detail' } }) } });
+    await server({ createClient }, async base => {
+      const response = await fetch(base + '/api/auth/cadastro', { method: 'POST', headers, body: JSON.stringify({ email: 'aluno@example.test', nome: 'Aluno', senha: 'senha1234' }) });
+      assert.equal(response.status, expectedStatus, `upstream ${upstreamStatus}`);
+      const result = await response.json();
+      assert.equal(result.code, expectedCode);
+      assert.ok(!JSON.stringify(result).includes('private-provider-detail'));
+    });
+  }
+});
+
+test('edição de encontro não pode reatribuir presenças a outro curso', async () => {
+  const fixture = createDemoClients();
+  const originalCourse = fixture.ids.course;
+  const otherCourse = '66666666-6666-4666-8666-666666666666';
+  fixture.tables.courses.push({ ...fixture.tables.courses[0], id: otherCourse, title: 'Outro curso' });
+  fixture.tables.attendances.push({ id: 'attendance', user_id: fixture.ids.student, activity_id: fixture.ids.activity, scanned_at: new Date().toISOString() });
+  await server(fixture, async base => {
+    const response = await fetch(base + `/api/admin/encontros/${fixture.ids.activity}`, { method: 'PATCH', headers: { ...headers, Authorization: 'Bearer demo-admin' }, body: JSON.stringify({ course_id: otherCourse, title: 'Título adulterado' }) });
+    assert.equal(response.status, 409);
+    assert.equal((await response.json()).code, 'COURSE_IMMUTABLE');
+    assert.equal(fixture.tables.activities[0].course_id, originalCourse);
+    assert.equal(fixture.tables.activities[0].title, 'Encontro de demonstração');
+    const history = await (await fetch(base + '/api/presencas', { headers: { Authorization: 'Bearer demo-aluno' } })).json();
+    assert.equal(history[0].course_title, 'Primeiros passos em tecnologia');
+  });
+});
+
+test('edição aceita mesmo curso e alterações de título sem reenviar vínculo ao banco', async () => {
+  const fixture = createDemoClients(); const updates = [];
+  const createClient = token => {
+    const client = fixture.createClient(token); const from = client.from;
+    client.from = table => {
+      const query = from(table); const update = query.update;
+      query.update = body => { updates.push({ ...body }); return update.call(query, body); };
+      return query;
+    };
+    return client;
+  };
+  await server({ createClient }, async base => {
+    for (const body of [{ course_id: fixture.ids.course, title: 'Título atualizado' }, { title: 'Outro título' }, { course_id: fixture.ids.course }]) {
+      const response = await fetch(base + `/api/admin/encontros/${fixture.ids.activity}`, { method: 'PATCH', headers: { ...headers, Authorization: 'Bearer demo-admin' }, body: JSON.stringify(body) });
+      assert.equal(response.status, 200);
+    }
+    assert.equal(fixture.tables.activities[0].course_id, fixture.ids.course);
+    assert.equal(fixture.tables.activities[0].title, 'Outro título');
+    assert.equal(updates.length, 2);
+    assert.ok(updates.every(body => !Object.hasOwn(body, 'course_id')));
   });
 });

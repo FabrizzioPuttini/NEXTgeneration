@@ -8,8 +8,13 @@
 - [Roteiro de testes](../../../src/Entrega2/TESTAR.md)
 - [Explicação de código e POO](<../Programação Orientada a Objetos e Estrutura de Dados/GUIA_POO.md>)
 
-URL configurada: `https://nextgeneration-seven.vercel.app/`. A implementação E2 está
-testada localmente e a migração Supabase foi aplicada em 08/11/2026. Publicação E2
-e validação hospedada ainda precisam ser confirmadas. A URL só comprova entrega
-integrada depois de validar autenticação, agenda, QR e histórico no ambiente publicado.
-Documento de extensão será preenchido pelo Luiz. O banner final enviado pela equipe está disponível no link acima.
+## Acesso para avaliação
+
+[Contas de teste, painel administrativo e roteiro de acesso](ACESSO_AVALIACAO.md).
+
+Painel publicado: https://nextgeneration-seven.vercel.app/admin/.
+Em 09/11/2026, o painel respondeu HTTP 200 e a API `/health` retornou `status: ok`.
+Cadastro e acesso de Luiz ao painel foram confirmados pelo usuário; o fluxo completo de QR hospedado permanece pendente.
+
+O documento de extensão e a declaração de uso de IA estão na [pasta documentos](../../).
+O banner final está disponível no link acima.

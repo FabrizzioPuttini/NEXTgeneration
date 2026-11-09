@@ -9,7 +9,8 @@ Os13 registros originais (ativos+arquivo) foram comparados campo a campo com o b
 igualdade integral. Backup e screenshots ficam em `.codex/state/supabase-preflight/`,
 ignorados pelo Git; nenhum dado pessoal foi incluído neste documento.
 
-Publicação E2, provisionamento administrativo e testes Auth/PostgREST continuam pendentes.
+Em 09/11/2026, publicação E2 e acesso administrativo foram confirmados. Cadastro/login
+foram confirmados por Luiz. O ensaio completo de QR e sincronização hospedados permanece pendente.
 Luiz aceitou a interrupção das inscrições E1 até a publicação, mantendo validação/merge
 da branch sob sua responsabilidade. Não executar restore pré-E2 após esta ativação.
 
@@ -103,3 +104,28 @@ Certificado é URL de documento previamente emitido; administrador deve confirma
 da organização foram atendidos. O sistema não inventa certificados nem determina regra oficial
 de frequência. Novo cadastro sem profile ainda exibe nome da identidade/Aluno e escola vazia,
 sem alegar que a ONG já cadastrou informações institucionais do participante.
+
+## Proteção do curso do encontro — migração 002 (aplicada em 09/11)
+
+`002_activity_course_immutable.sql` acrescenta uma regra de integridade: um encontro
+não troca de curso após criação. Título, data e cancelamento continuam editáveis.
+A migração não altera registros, não apaga presenças e não recria as tabelas.
+
+Aplicar somente após revisão/autorização, usando o projeto correto e backup do schema.
+Executar o arquivo002 isoladamente; não reaplicar reparos nem a migração001.
+Os limites de espera por lock e de execução estão no script. Se o lock não puder ser
+obtido, a transação deve falhar e ser repetida numa janela adequada, sem ampliar o timeout
+às cegas. Após aplicação, conferir trigger/função pelo catálogo e testar com dados fictícios.
+
+Compatibilidade: clientes antigos podem enviar o mesmo course_id; a regra aceita isso.
+A API nova omite a coluna no UPDATE. Clientes que tentarem trocar efetivamente o curso
+receberão erro; para outro curso, deve ser criado outro encontro.
+
+Rollback: os comandos comentados no arquivo removem somente a proteção002 e sua função,
+sem alterar dados. O rollback reabre a possibilidade de reatribuição de presenças e requer
+aprovação. Em 09/11, após autorização do Luiz, o SQL002 foi executado no projeto
+hejcktjrlursifgcjdon pelo Chrome pessoal. Preflight: PostgreSQL17.6, course_id UUID,
+5 encontros e1 presença, trigger002 ausente. Após COMMIT: trigger ativo BEFORE UPDATE
+OF course_id, SECURITY INVOKER, execução anon/authenticated negada; mesmas contagens
+de5 encontros e1 presença. Nenhum UPDATE/DELETE de registros foi executado.
+O teste comportamental permaneceu local; não alteramos registros reais para testar.

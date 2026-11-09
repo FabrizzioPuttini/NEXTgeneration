@@ -2,7 +2,9 @@
 
 Express + Supabase: autenticação, cursos/inscrição, agenda, presença por QR,
 histórico, card, certificados, teste de interesses, comunicados, suporte e notificações.
-Painel administrativo em `/admin/`. Código local; banco remoto e deploy ainda não alterados.
+Painel administrativo em `/admin/`. Migração aplicada em 08/11/2026; API e painel publicados
+em https://nextgeneration-seven.vercel.app/ e verificados em 09/11.
+Veja [status da entrega](../STATUS.md) para alterações locais ainda não publicadas.
 
 ## Executar
 
@@ -55,3 +57,16 @@ O teste de interesses é demonstrativo, sem validade psicométrica. Certificados
 são URLs HTTPS de documentos já emitidos, cadastradas após confirmação da equipe.
 As notificações são consultadas no app; não há envio push por Firebase.
 Listagens têm limites explícitos no contrato; não existe paginação nesta entrega.
+
+## Cabeçalhos no Vercel
+
+O Vercel serve `public/` pela CDN, sem executar `express.static()`. Por isso,
+`vercel.json` define os cabeçalhos para todas as rotas, inclusive `/admin/` e seus
+arquivos. O middleware Express protege as respostas dinâmicas e o servidor local.
+Fonte: [Express no Vercel](https://vercel.com/docs/frameworks/backend/express#serving-static-assets).
+
+Depois da publicação, confira com `curl -I https://nextgeneration-seven.vercel.app/admin/`:
+`Content-Security-Policy`, `X-Content-Type-Options: nosniff`,
+`Referrer-Policy: no-referrer`, `X-Frame-Options: DENY` e `Cache-Control: no-store`.
+Se faltarem, confirme que o deploy usa o commit aprovado e Root Directory
+`src/Entrega2/Backend`, incluindo seu `vercel.json`. A mudança local não comprova o deploy.

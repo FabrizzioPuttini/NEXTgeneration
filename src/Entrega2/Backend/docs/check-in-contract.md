@@ -18,6 +18,6 @@ horário autodeclarado nem garantia de check-in offline fora da janela.
 INSERT/UPDATE/DELETE diretos de presenças e inscrições são revogados dos clientes;
 RLS restringe leitura própria, ampliada a administradores autenticados.
 Falhas operacionais viram503 sem detalhes internos. Códigos e respostas estão no
-[contrato HTTP](http-contract.md). O banco hospedado ainda depende do preflight e
-aplicação revisada: testes locais não equivalem a integração remota nem prova de
-concorrência real com múltiplas conexões.
+[contrato HTTP](http-contract.md). A migração foi aplicada em 08/11/2026, conforme o runbook.
+O ensaio completo de QR online/offline hospedado ainda deve ser repetido: testes
+locais não equivalem a integração remota nem prova de concorrência multiconexão.

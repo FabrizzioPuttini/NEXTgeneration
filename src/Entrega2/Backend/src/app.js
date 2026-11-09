@@ -11,6 +11,7 @@ const ERRORS = {
   UNAUTHENTICATED: [401, 'Entre novamente na sua conta.'], FORBIDDEN: [403, 'Acesso não autorizado.'],
   NOT_ENROLLED: [403, 'Você não está inscrito neste encontro.'], NOT_FOUND: [404, 'Registro não encontrado.'],
   QR_NOT_ACTIVE: [409, 'O período de presença ainda não começou.'], QR_EXPIRED: [410, 'O QR Code expirou.'],
+  COURSE_IMMUTABLE: [409, 'O curso de um encontro não pode ser alterado. Crie outro encontro.'],
   COURSE_FULL: [409, 'Não há vagas disponíveis.'], SERVICE_UNAVAILABLE: [503, 'Serviço indisponível. Tente novamente.'],
 };
 class ApiError extends Error { constructor(code) { super(code); this.code = code; } }
@@ -48,6 +49,7 @@ function createApp({ createClient = productionClient } = {}) {
   app.disable('x-powered-by');
   app.use((req, res, next) => {
     res.set('X-Content-Type-Options', 'nosniff');
+    res.set('X-Frame-Options', 'DENY');
     res.set('Referrer-Policy', 'no-referrer');
     res.set('Cache-Control', 'no-store');
     res.set('Content-Security-Policy', "default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'");
@@ -71,7 +73,7 @@ function createApp({ createClient = productionClient } = {}) {
     const b = object(req.body); const email = text(b.email, 254); const nome = text(b.nome, 120);
     invalid(typeof b.senha !== 'string' || b.senha.length < 8 || b.senha.length > 1024);
     const result = await createClient().auth.signUp({ email, password: b.senha, options: { data: { full_name: nome } } });
-    if (result.error) throw new ApiError('INVALID_INPUT');
+    if (result.error) throw new ApiError([400, 422].includes(result.error.status) ? 'INVALID_INPUT' : 'SERVICE_UNAVAILABLE');
     res.status(201).json({ message: 'Cadastro solicitado. Verifique seu e-mail se houver confirmação pendente.', user: result.data.user ? { id: result.data.user.id } : null });
   });
   app.use('/api', async (req, res, next) => {
@@ -195,7 +197,17 @@ function createApp({ createClient = productionClient } = {}) {
   for (const [route, table, parse] of [['cursos', 'courses', courseBody], ['encontros', 'activities', activityBody]]) {
     app.post(`/api/admin/${route}`, async (req, res) => res.status(201).json(await data(req.db.from(table).insert(parse(req.body, false)).select().single())));
     app.patch(`/api/admin/${route}/:id`, async (req, res) => {
-      const row = await data(req.db.from(table).update(parse(req.body, true)).eq('id', id(req.params.id)).select().maybeSingle());
+      const recordId = id(req.params.id);
+      const changes = parse(req.body, true);
+      if (table === 'activities' && changes.course_id !== undefined) {
+        const current = await data(req.db.from(table).select('*').eq('id', recordId).maybeSingle());
+        if (!current) throw new ApiError('NOT_FOUND');
+        if (changes.course_id.toLowerCase() !== current.course_id.toLowerCase()) throw new ApiError('COURSE_IMMUTABLE');
+        // O vínculo nunca é regravado: evita reatribuir presenças e mantém clientes antigos compatíveis.
+        delete changes.course_id;
+        if (!Object.keys(changes).length) return res.json(current);
+      }
+      const row = await data(req.db.from(table).update(changes).eq('id', recordId).select().maybeSingle());
       if (!row) throw new ApiError('NOT_FOUND'); res.json(row);
     });
     app.delete(`/api/admin/${route}/:id`, async (req, res) => {

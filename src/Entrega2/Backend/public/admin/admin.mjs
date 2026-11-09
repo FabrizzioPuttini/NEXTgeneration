@@ -318,6 +318,8 @@ async function editMeeting(row = null) {
   $('cancel-meeting').hidden = !row || row.is_cancelled;
   $('meeting-title').value = row?.title || ''; $('meeting-date-input').value = localDateInput(row?.activity_date);
   $('meeting-course-input').replaceChildren();
+  $('meeting-course-input').disabled = Boolean(row);
+  $('meeting-course-input').title = row ? 'O curso fica fixo para preservar o histórico de presenças.' : '';
   showEditor('meeting-editor', 'meeting-title');
   await busy($('meeting-form'), async () => {
     try {
@@ -338,7 +340,8 @@ $('edit-meeting').addEventListener('click', () => editMeeting(state.meeting));
 $('close-meeting-editor').addEventListener('click', () => { if ($('meeting-form').dataset.busy !== 'true') { versions.editor++; $('meeting-editor').hidden = true; $('new-meeting').focus(); } });
 $('meeting-form').addEventListener('submit', event => {
   event.preventDefault(); const id = state.editingMeeting;
-  const body = { title: $('meeting-title').value.trim(), course_id: $('meeting-course-input').value, activity_date: new Date($('meeting-date-input').value).toISOString() };
+  const body = { title: $('meeting-title').value.trim(), activity_date: new Date($('meeting-date-input').value).toISOString() };
+  if (!id) body.course_id = $('meeting-course-input').value;
   busy(event.currentTarget, async () => {
     status('meeting-form-status', 'Salvando encontro…');
     try {

@@ -14,11 +14,12 @@ Aplicativo Android para estudantes, API Express/Supabase e painel web para a equ
 
 ## Entrega 2
 
-Implementação em `src/Entrega2`, branch `Luiz-entrega2`. A Entrega 1 foi preservada.
-A migração Supabase foi aplicada em 08/11/2026. A publicação do backend E2 pela equipe
-e a validação integrada hospedada ainda precisam ser confirmadas. A URL
-`https://nextgeneration-seven.vercel.app/` é a configuração padrão do app; isso não
-significa que as novas rotas já estejam disponíveis nesse ambiente.
+Implementação em `src/Entrega2`, integrada à `main`. A Entrega 1 foi preservada.
+A migração Supabase foi aplicada em 08/11/2026. Em 09/11, API e painel publicados
+responderam, e Luiz confirmou cadastro/login e acesso administrativo.
+API: https://nextgeneration-seven.vercel.app/ — painel: https://nextgeneration-seven.vercel.app/admin/.
+O ensaio completo de QR online/offline no ambiente publicado ainda está pendente.
+Consulte o status abaixo para distinguir correções locais de alterações publicadas.
 
 - [Comece pelos testes](src/Entrega2/TESTAR.md)
 - [Android e configuração da API](src/Entrega2/Frontend/README.md)
