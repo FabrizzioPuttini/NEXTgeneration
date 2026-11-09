@@ -242,4 +242,6 @@ function createApp({ createClient = productionClient } = {}) {
   return app;
 }
 
-module.exports = { createApp };
+// O Vercel detecta este arquivo como entrada e exige um handler Express.
+module.exports = createApp();
+module.exports.createApp = createApp;
