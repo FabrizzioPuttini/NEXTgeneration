@@ -7,7 +7,10 @@
       - localhost -> caso o teste seja feito rodando o app dentro do
                      próprio emulador/host em cenários específicos.
 
-    Qualquer outro host (produção, backend hospedado) continua exigindo
+    Esta liberação é EXCLUSIVA de desenvolvimento local. O ambiente de
+    produção (backend hospedado na Vercel, consumido por padrão pelo
+    app) já responde em HTTPS e não depende desta configuração.
+    Qualquer outro host, incluindo o de produção, continua exigindo
     HTTPS normalmente, pois cleartextTrafficPermitted só é true para os
     domains listados aqui.
 -->

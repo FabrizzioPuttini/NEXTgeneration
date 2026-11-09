@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Próxima Etapa</string>
+    <string name="ui_1">Atualizar</string>
+    <string name="ui_2">Carregando…</string>
+    <string name="ui_3">Registrar presença</string>
+    <string name="ui_4">Escreva sua dúvida</string>
+    <string name="ui_5">Enviar</string>
+    <string name="ui_6">Início</string>
+    <string name="ui_7">Cursos</string>
+    <string name="ui_8">Agenda</string>
+    <string name="ui_9">Perfil</string>
+    <string name="ui_10">Sua próxima etapa começa aqui</string>
+    <string name="ui_11">Entre para acompanhar seus cursos, encontros e conquistas.</string>
+    <string name="ui_12">Nome completo</string>
+    <string name="ui_13">E-mail</string>
+    <string name="ui_14">Senha</string>
+    <string name="ui_15">Entrar</string>
+    <string name="ui_16">Criar minha conta</string>
+    <string name="ui_17">Abrir</string>
+    <string name="demo_certificate_action">Certificado de demonstração</string>
+    <string name="demo_certificate_notice">DEMONSTRAÇÃO — SEM VALIDADE</string>
+    <string name="demo_certificate_description">Exemplo fictício incluído no aplicativo para testar abertura e salvamento de PDF. Não comprova participação, conclusão de curso ou horas complementares.</string>
+    <string name="demo_certificate_open">Abrir PDF</string>
+    <string name="demo_certificate_save">Salvar PDF</string>
+    <string name="demo_certificate_saved">PDF de demonstração salvo no local escolhido.</string>
+    <string name="demo_certificate_save_error">Não foi possível salvar o PDF. Tente escolher outro local.</string>
+    <string name="demo_certificate_open_error">Não foi possível abrir o PDF. Use Salvar PDF e abra com um leitor de PDF.</string>
+<string name="profile_email_label">E-mail</string><string name="profile_school_label">Escola</string></resources>

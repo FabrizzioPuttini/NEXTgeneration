@@ -88,6 +88,7 @@ async function listAgenda(req, res) {
     const activityIds = (activities || []).map((a) => a.id);
 
     // 3. Presenças do aluno nesses encontros (para marcar "attended")
+    
     let attendedIds = new Set();
     if (activityIds.length > 0) {
       const { data: attendances, error: attendancesError } = await req.supabase

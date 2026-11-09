@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+ <color name="background">#101917</color>
+ <color name="objectColor">#E6F0EC</color>
+ <color name="menuColor">#18231F</color>
+ <color name="darkcyan">#8DD8CA</color>
+ <color name="selected_green">#8DD8CA</color>
+ <color name="text_secondary">#BBCDC7</color>
+ <color name="card_surface">#1B2924</color>
+ <color name="card_outline">#42594F</color>
+ <color name="nav_selected">#294C42</color>
+ <color name="error_text">#FFB4AB</color>
+ <color name="on_primary">#07382F</color>
+</resources>

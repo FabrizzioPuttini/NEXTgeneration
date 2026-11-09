@@ -1,0 +1,25 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Backend REST da tela de Agenda do app Android da ONG Próxima Etapa, usando Supabase como banco de dados.",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "node --test test/*.test.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@supabase/supabase-js": "2.117.1",
+    "cors": "2.8.6",
+    "dotenv": "18.0.3",
+    "express": "^5.2.1",
+    "qrcode": "1.5.4"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "0.5.15"
+  }
+}

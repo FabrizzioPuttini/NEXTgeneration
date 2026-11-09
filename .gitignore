@@ -7,6 +7,7 @@
 /.idea/workspace.xml
 /.idea/navEditor.xml
 /.idea/assetWizardSettings.xml
+/src/Entrega2/Frontend/.idea/
 .DS_Store
 **/build/
 /captures
@@ -18,3 +19,11 @@ node_modules/
 .env
 .env.*
 !.env.example
+
+# Arquivos locais de apoio, fora da entrega versionada.
+/.codex/
+/ScreenshotsToCloseLoop/runs/entrega2/
+/CONTRIBUTING.md
+
+# Configuração local do Android Studio em qualquer módulo.
+**/.idea/

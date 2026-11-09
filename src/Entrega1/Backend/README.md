@@ -5,8 +5,76 @@ Android da ONG **Próxima Etapa**. É apenas uma camada HTTP sobre um banco
 Supabase (PostgreSQL) que já existe — este backend não cria, altera nem
 migra nenhuma tabela.
 
-Cada integrante do grupo é responsável pelo backend da própria tela; este
-serviço cobre somente `/api/agenda`.
+Cada integrante do grupo ficou responsável pelo backend de uma tela; este
+repositório consolida o backend de todas elas (agenda, autenticação,
+cursos, início e perfil) em um único serviço Express.
+
+## Ambiente publicado e evidência
+
+Este backend já está **hospedado na Vercel** e é o ambiente usado por
+padrão pelo app Android (`ApiClient.BASE_URL`):
+
+- **URL de produção:** <https://nextgeneration-seven.vercel.app/>
+- **Health check:**
+  ```bash
+  curl https://nextgeneration-seven.vercel.app/health
+  ```
+  Resposta esperada:
+  ```json
+  { "status": "ok" }
+  ```
+
+Exemplos de chamadas autenticadas usando a URL de produção:
+
+```bash
+# Login (obtém o access_token)
+curl -X POST https://nextgeneration-seven.vercel.app/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{ "email": "aluno@teste.com", "senha": "senha-do-aluno" }'
+
+export ACCESS_TOKEN="<cole_aqui_o_access_token_retornado>"
+
+# Agenda do aluno logado
+curl "https://nextgeneration-seven.vercel.app/api/agenda?from=2026-03-01" \
+  -H "Authorization: Bearer $ACCESS_TOKEN"
+
+# Perfil do aluno logado
+curl https://nextgeneration-seven.vercel.app/api/perfil \
+  -H "Authorization: Bearer $ACCESS_TOKEN"
+```
+
+**Evidência da entrega — print do health check:**
+
+`[cole aqui o print de "curl .../health" retornando {"status":"ok"}]`
+
+### Configuração do deploy na Vercel
+
+Este projeto Express usa o padrão de "zero configuration" da Vercel para
+apps Express (entry point em `src/server.js`, com `app.listen`), sem um
+`vercel.json` customizado neste repositório. A configuração aplicada no
+deploy atual, registrada aqui para reprodutibilidade, é:
+
+| Configuração | Valor |
+|---|---|
+| Root Directory (painel Vercel) | `src/Entrega1/Backend` |
+| Framework Preset | Other / Node.js |
+| Build Command | padrão (nenhum build customizado necessário) |
+| Output/Entry | `src/server.js` |
+| Install Command | `npm install` (padrão) |
+
+Environment Variables cadastradas no painel do projeto na Vercel (sem
+valores — os mesmos nomes usados no `.env.example` deste diretório):
+
+- `SUPABASE_URL`
+- `SUPABASE_ANON_KEY`
+
+> A variável `PORT` não é necessária na Vercel: a plataforma gerencia a
+> porta do processo automaticamente.
+
+Se o Root Directory ou alguma dessas configurações estiver diferente da
+tabela acima no painel real do projeto, atualize esta seção para refletir
+a configuração de fato usada — o objetivo aqui é que qualquer pessoa do
+grupo consiga reproduzir o deploy sem depender de acesso ao painel.
 
 ## Stack
 
@@ -20,13 +88,25 @@ serviço cobre somente `/api/agenda`.
 
 ```
 src/
-  server.js              -> sobe o Express, registra rotas
-  config/supabase.js     -> factory de client Supabase
-  middleware/auth.js      -> extrai e valida o token do usuário
+  server.js                  -> sobe o Express, registra rotas
+  config/supabase.js         -> factory de client Supabase
+  middleware/auth.js         -> extrai e valida o token do usuário
   routes/
     agenda.routes.js
+    auth.routes.js
+    curso.routes.js
+    inicio.routes.js
+    perfil.routes.js
   controllers/
     agenda.controller.js
+    auth.controller.js
+    curso.controller.js
+    inicio.controller.js
+    perfil.controller.js
+sql/
+  enable_rls.sql
+  seed_institucional.sql
+  seed_aluno_teste.sql
 .env.example
 ```
 
@@ -50,7 +130,7 @@ Variáveis necessárias:
 |---|---|
 | `SUPABASE_URL` | Painel do Supabase → Project Settings → API → Project URL |
 | `SUPABASE_ANON_KEY` | Painel do Supabase → Project Settings → API → anon public key |
-| `PORT` | Porta local, ex.: `3000` (no Render, a plataforma define automaticamente) |
+| `PORT` | Porta local, ex.: `3000` (na Vercel, a plataforma gerencia a porta automaticamente) |
 
 **Nunca commite o `.env`** — ele já está no `.gitignore` do repositório.
 
@@ -82,7 +162,8 @@ O `access_token` é o JWT retornado pelo login do aluno no Supabase Auth
 
 ### `GET /health`
 
-Verifica se o serviço está no ar. Sem autenticação — usado pelo Render.
+Verifica se o serviço está no ar. Sem autenticação — usado como health
+check pela Vercel e para diagnóstico manual.
 
 **Request:**
 ```bash
@@ -92,6 +173,82 @@ curl http://localhost:3000/health
 **Response `200`:**
 ```json
 { "status": "ok" }
+```
+
+### `POST /api/auth/cadastro`
+
+Cadastra um novo aluno no Supabase Auth. Sem autenticação.
+
+**Request:**
+```bash
+curl -X POST http://localhost:3000/api/auth/cadastro \
+  -H "Content-Type: application/json" \
+  -d '{ "nome": "Aluno Teste", "email": "aluno@teste.com", "senha": "senha-do-aluno" }'
+```
+
+**Response `201`:**
+```json
+{ "message": "Cadastro realizado com sucesso.", "user": { "...": "..." } }
+```
+
+### `POST /api/auth/login`
+
+Autentica o aluno e retorna o `access_token` usado nas demais rotas. Sem
+autenticação prévia.
+
+**Request:**
+```bash
+curl -X POST http://localhost:3000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{ "email": "aluno@teste.com", "senha": "senha-do-aluno" }'
+```
+
+**Response `200`:**
+```json
+{
+  "message": "Login realizado com sucesso.",
+  "access_token": "...",
+  "refresh_token": "...",
+  "user": { "...": "..." }
+}
+```
+
+### `GET /api/inicio`
+
+Retorna os dados de resumo exibidos na página inicial do aluno logado.
+
+**Request:**
+```bash
+curl http://localhost:3000/api/inicio \
+  -H "Authorization: Bearer $ACCESS_TOKEN"
+```
+
+### `GET /api/cursos`
+
+Lista todos os cursos disponíveis. Sem autenticação.
+
+**Request:**
+```bash
+curl http://localhost:3000/api/cursos
+```
+
+### `GET /api/cursos/:id`
+
+Detalhe de um curso específico. Sem autenticação.
+
+**Request:**
+```bash
+curl http://localhost:3000/api/cursos/33333333-3333-3333-3333-333333333333
+```
+
+### `POST /api/cursos/:id/inscricao`
+
+Inscreve o aluno logado no curso informado.
+
+**Request:**
+```bash
+curl -X POST http://localhost:3000/api/cursos/33333333-3333-3333-3333-333333333333/inscricao \
+  -H "Authorization: Bearer $ACCESS_TOKEN"
 ```
 
 ### `GET /api/agenda`
@@ -118,6 +275,16 @@ curl "http://localhost:3000/api/agenda?from=2026-03-01" \
     "attended": false
   }
 ]
+```
+
+### `GET /api/perfil`
+
+Retorna o perfil do aluno logado.
+
+**Request:**
+```bash
+curl http://localhost:3000/api/perfil \
+  -H "Authorization: Bearer $ACCESS_TOKEN"
 ```
 
 ## Testando localmente com `curl`

@@ -88,8 +88,9 @@ public class CursosActivity extends AppCompatActivity {
 
         rvCursos.setAdapter(adapter);
 
-        // 3. Buscar a lista de cursos do Backend
-        buscarCursosDoBackend();
+        // 3. Buscar a lista de cursos do Backend foi movido para o onResume()
+        // para garantir que os cursos carreguem sempre que a tela for aberta
+
         layoutInicio.setOnClickListener(v -> {
             Intent inicio = new Intent(CursosActivity.this, PaginaInicial.class);
             startActivity(inicio);
@@ -102,6 +103,14 @@ public class CursosActivity extends AppCompatActivity {
             Intent perfil = new Intent(CursosActivity.this, PerfilActivity.class);
             startActivity(perfil);
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Toda vez que a tela de Cursos voltar a aparecer (depois de você ir para
+        // outra aba e voltar), ela busca a lista de cursos do backend de novo.
+        buscarCursosDoBackend();
     }
 
     private void buscarCursosDoBackend() {

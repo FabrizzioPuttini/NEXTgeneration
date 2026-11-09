@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="referrer" content="no-referrer">
+  <title>Próxima Etapa · Painel da equipe</title>
+  <link rel="stylesheet" href="/admin/admin.css">
+  <script type="module" src="/admin/admin.mjs"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Ir para o conteúdo</a>
+  <header class="site-header">
+    <a class="brand" href="/admin/" aria-label="Próxima Etapa, painel da equipe">
+      <img src="/admin/logo.png" alt="Próxima Etapa" width="104" height="88">
+      <span><strong>Painel da equipe</strong><small>Aprender. Participar. Avançar.</small></span>
+    </a>
+    <button id="logout" class="quiet" type="button" hidden>Sair da conta</button>
+  </header>
+  <main id="main" tabindex="-1">
+    <section id="login-view" class="login-layout" aria-labelledby="login-title">
+      <div class="welcome">
+        <p class="section-label">Próxima Etapa</p>
+        <h1>Mais perto de cada estudante.</h1>
+        <p>Organize os encontros e acompanhe a participação dos alunos em um só lugar.</p>
+        <ol class="welcome-steps">
+          <li><span>01</span><div><strong>Prepare o encontro</strong><p>Confira o curso, a data e o local.</p></div></li>
+          <li><span>02</span><div><strong>Compartilhe o QR Code</strong><p>Os alunos registram presença pelo aplicativo.</p></div></li>
+          <li><span>03</span><div><strong>Acompanhe a jornada</strong><p>Consulte presenças e responda às dúvidas.</p></div></li>
+        </ol>
+      </div>
+      <section class="login-panel" aria-labelledby="login-title">
+        <h2 id="login-title">Entrar no painel</h2>
+        <p class="muted">Acesso exclusivo à equipe autorizada.</p>
+        <form id="login-form">
+          <label for="email">E-mail</label>
+          <input id="email" name="email" type="email" autocomplete="username" required maxlength="254">
+          <label for="password">Senha</label>
+          <input id="password" name="password" type="password" autocomplete="current-password" required>
+          <button type="submit" class="primary wide">Entrar</button>
+        </form>
+        <p id="login-status" class="status" role="status" aria-live="polite"></p>
+        <p class="login-note">Sua conta de aluno continua disponível no aplicativo Android. Para acessar este painel, é necessária autorização administrativa.</p>
+      </section>
+    </section>
+
+    <div id="workspace" hidden>
+      <nav class="main-nav" aria-label="Áreas do painel">
+        <button type="button" data-view="encontros" aria-current="page">Encontros</button>
+        <button type="button" data-view="cursos">Cursos</button>
+        <button type="button" data-view="comunicados">Comunicados</button>
+        <button type="button" data-view="duvidas">Dúvidas</button>
+      </nav>
+      <p id="global-status" class="status global-status" role="status" aria-live="polite"></p>
+
+      <section id="view-encontros" class="view" aria-labelledby="encontros-title">
+        <div class="page-heading"><div><p class="section-label">Presença e participação</p><h1 id="encontros-title">Encontros</h1><p class="muted">Escolha um encontro para abrir o check-in.</p></div><button id="new-meeting" type="button" class="primary">Novo encontro</button></div>
+        <div class="meeting-layout">
+          <aside class="selection-panel" aria-label="Selecionar encontro">
+            <div class="toolbar"><label for="meeting-search">Buscar encontro</label><button id="reload-meetings" class="text-button" type="button">Atualizar</button></div>
+            <input id="meeting-search" type="search" placeholder="Curso ou nome do encontro">
+            <div id="meeting-list" class="select-list" aria-live="polite"></div>
+          </aside>
+          <div class="meeting-workspace">
+            <div id="meeting-empty" class="empty-state"><span class="empty-symbol" aria-hidden="true">◎</span><h2>Um encontro, uma nova etapa</h2><p>Selecione um encontro ao lado para exibir seu QR Code e acompanhar as presenças.</p></div>
+            <section id="meeting-detail" hidden aria-labelledby="meeting-name">
+              <div class="detail-heading"><div><p id="meeting-course" class="section-label"></p><h2 id="meeting-name"></h2><p id="meeting-date" class="muted"></p></div><button id="edit-meeting" type="button" class="quiet">Editar encontro</button></div>
+              <p id="meeting-cancelled" class="notice warning" hidden>Encontro cancelado. O check-in não está disponível.</p>
+              <div class="qr-stage">
+                <div id="qr-placeholder" class="qr-placeholder"><span aria-hidden="true">▦</span><p>Pronto para receber os alunos?</p><small>Gere o código quando o encontro começar.</small></div>
+                <img id="qr-image" alt="QR Code para registrar presença neste encontro" width="320" height="320" hidden>
+                <p id="qr-status" class="qr-status" aria-live="off">Check-in ainda não aberto</p>
+                <p id="qr-expiration" class="muted"></p>
+                <form id="qr-form" class="qr-controls">
+                  <div><label for="qr-duration">Validade do código</label><select id="qr-duration"><option value="15">15 minutos</option><option value="30">30 minutos</option><option value="60" selected>1 hora</option><option value="120">2 horas</option><option value="240">4 horas</option></select></div>
+                  <button type="submit" class="primary">Gerar QR Code</button>
+                </form>
+                <p class="help">O aluno deve estar inscrito no curso e usar o aplicativo para ler o código.</p>
+              </div>
+              <div class="subheading"><h3>Presenças confirmadas <span id="attendance-count" class="count"></span></h3><button id="reload-attendance" class="quiet" type="button">Atualizar presenças</button></div>
+              <div id="attendance-list" class="attendance-list" aria-live="polite"></div>
+            </section>
+          </div>
+        </div>
+        <section id="meeting-editor" class="editor" hidden aria-labelledby="meeting-editor-title">
+          <div class="subheading"><h2 id="meeting-editor-title">Novo encontro</h2><button class="quiet" id="close-meeting-editor" type="button">Fechar</button></div>
+          <form id="meeting-form" class="form-grid">
+            <div class="full"><label for="meeting-title">Nome do encontro</label><input id="meeting-title" maxlength="160" required></div>
+            <div><label for="meeting-course-input">Curso</label><select id="meeting-course-input" required></select></div>
+            <div><label for="meeting-date-input">Data e horário</label><input id="meeting-date-input" type="datetime-local" required><small class="help">Horário local deste dispositivo.</small></div>
+            <div class="full form-actions"><button type="submit" class="primary">Salvar encontro</button><button id="cancel-meeting" type="button" class="danger" hidden>Cancelar encontro</button></div>
+          </form>
+          <p id="meeting-form-status" class="status" role="status"></p>
+          <div id="cancel-meeting-confirm" class="confirmation" hidden><p>Cancelar este encontro? As presenças anteriores serão preservadas, mas o check-in será encerrado.</p><button id="confirm-cancel-meeting" type="button" class="danger">Confirmar cancelamento</button><button id="keep-meeting" type="button" class="quiet">Manter encontro</button></div>
+        </section>
+      </section>
+
+      <section id="view-cursos" class="view" hidden aria-labelledby="cursos-title">
+        <div class="page-heading"><div><p class="section-label">Oportunidades de aprendizado</p><h1 id="cursos-title">Cursos</h1><p class="muted">Mantenha as informações que os alunos encontram no aplicativo.</p></div><button id="new-course" type="button" class="primary">Novo curso</button></div>
+        <div class="list-toolbar"><label for="course-search">Buscar curso</label><input id="course-search" type="search" placeholder="Nome ou local"><button id="reload-courses" type="button" class="quiet">Atualizar</button></div>
+        <div id="course-list" class="course-list" aria-live="polite"></div>
+        <section id="course-editor" class="editor" hidden aria-labelledby="course-editor-title">
+          <div class="subheading"><h2 id="course-editor-title">Novo curso</h2><button id="close-course-editor" type="button" class="quiet">Fechar</button></div>
+          <form id="course-form" class="form-grid">
+            <div class="full"><label for="course-title">Nome do curso</label><input id="course-title" required maxlength="160"></div>
+            <div class="full"><label for="course-description">Descrição</label><textarea id="course-description" rows="3" required maxlength="4000"></textarea></div>
+            <div><label for="course-location">Local</label><input id="course-location" required maxlength="300"></div>
+            <div><label for="course-date">Data de início</label><input id="course-date" type="datetime-local" required><small class="help">Horário local deste dispositivo.</small></div>
+            <div><label for="course-workload">Carga horária em horas</label><input id="course-workload" type="number" min="1" max="10000" step="1" value="1" required></div>
+            <div><label for="course-meetings">Número de encontros</label><input id="course-meetings" type="number" min="1" max="500" step="1" value="1" required></div>
+            <div><label for="course-spots">Número de vagas</label><input id="course-spots" type="number" min="1" max="10000" step="1" value="30" required></div>
+            <div class="full"><label class="check-label"><input id="course-active" type="checkbox" checked> Curso ativo no aplicativo</label></div>
+            <div class="full form-actions"><button type="submit" class="primary">Salvar curso</button><button id="archive-course" type="button" class="danger" hidden>Arquivar curso</button></div>
+          </form>
+          <p id="course-form-status" class="status" role="status"></p>
+          <div id="archive-course-confirm" class="confirmation" hidden><p>Arquivar este curso? As inscrições e presenças serão preservadas.</p><button id="confirm-archive-course" type="button" class="danger">Confirmar arquivamento</button><button id="keep-course" type="button" class="quiet">Manter curso</button></div>
+        </section>
+      </section>
+
+      <section id="view-comunicados" class="view" hidden aria-labelledby="comunicados-title">
+        <div class="page-heading"><div><p class="section-label">Conexão com os estudantes</p><h1 id="comunicados-title">Comunicados</h1><p class="muted">Compartilhe informações importantes com os alunos.</p></div></div>
+        <div class="communication-layout"><section class="editor" aria-labelledby="new-announcement-title"><h2 id="new-announcement-title">Novo comunicado</h2><form id="announcement-form"><label for="announcement-title">Título</label><input id="announcement-title" required maxlength="120"><label for="announcement-body">Mensagem</label><textarea id="announcement-body" rows="7" required maxlength="4000"></textarea><p class="help">O comunicado ficará disponível para os alunos no aplicativo.</p><button class="primary" type="submit">Publicar comunicado</button></form><p id="announcement-status" role="status" class="status"></p></section><section><div class="subheading"><h2>Publicados</h2><button id="reload-announcements" type="button" class="quiet">Atualizar</button></div><div id="announcement-list" class="announcement-list" aria-live="polite"></div></section></div>
+      </section>
+
+      <section id="view-duvidas" class="view" hidden aria-labelledby="duvidas-title">
+        <div class="page-heading"><div><p class="section-label">Escuta e orientação</p><h1 id="duvidas-title">Dúvidas dos alunos</h1><p class="muted">Responda às mensagens recebidas pelo aplicativo.</p></div><button id="reload-messages" class="quiet" type="button">Atualizar mensagens</button></div>
+        <div class="message-layout"><aside class="selection-panel" aria-label="Conversas"><h2 class="small-title">Conversas</h2><div id="conversation-list" class="select-list" aria-live="polite"></div></aside><section class="conversation-pane"><div id="conversation-empty" class="empty-state"><h2>Vamos conversar?</h2><p>Selecione um aluno para ler as mensagens e responder.</p></div><div id="conversation-detail" hidden><h2 id="conversation-title"></h2><div id="message-list" class="message-list" role="log" aria-live="polite" aria-label="Mensagens da conversa"></div><form id="reply-form"><label for="reply-body">Sua resposta</label><textarea id="reply-body" required maxlength="2000" rows="3"></textarea><div class="form-actions"><button type="submit" class="primary">Enviar resposta</button></div></form><p id="reply-status" role="status" class="status"></p></div></section></div>
+      </section>
+    </div>
+  </main>
+  <footer class="site-footer"><span>Próxima Etapa</span><span>Uma jornada de oportunidades.</span></footer>
+</body>
+</html>
